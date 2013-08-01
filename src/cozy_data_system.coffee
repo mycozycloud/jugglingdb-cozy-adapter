@@ -48,7 +48,6 @@ class exports.CozyDataSystem
             @applyRequest descr.model.modelName, params, callback
         descr.model._forDB = (data) =>
             @_forDB descr.model.modelName, data
-
         descr.model::index = (fields, callback) ->
             @_adapter().index @, fields, callback
         descr.model::attachFile = (path, data, callback) ->
@@ -69,6 +68,7 @@ class exports.CozyDataSystem
             @_adapter().mergeAccount @, data, callback
         descr.model::destroyAccount = (callback) ->
             @_adapter().destroyAccount @, callback
+
 
 
     # Check existence of model in the data system.
@@ -490,6 +490,41 @@ class exports.CozyDataSystem
                                     model.account = null
                                     callback null
 
+# Send mail
+exports.sendMail = (data, callback) ->
+    @client = new Client "http://localhost:9101/"
+    path = "mail/"
+    @client.post path, data, (error, response, body) =>
+        if error
+            callback error
+        else if response.statusCode isnt 200
+            callback new Error("Server error occured.")
+        else
+            callback()    
+
+# Send mail to user
+exports.sendMailToUser = (data, callback) ->
+    @client = new Client "http://localhost:9101/"
+    path = "mail/to-user/"
+    @client.post path, data, (error, response, body) =>
+        if error
+            callback error
+        else if response.statusCode isnt 200
+            callback new Error("Server error occured.")
+        else
+            callback()    
+
+# Send mail from user
+exports.sendMailFromUser = (data, callback) ->
+    @client = new Client "http://localhost:9101/"
+    path = "mail/from-user/"
+    @client.post path, data, (error, response, body) =>
+        if error
+            callback error
+        else if response.statusCode isnt 200
+            callback new Error("Server error occured.")
+        else
+            callback()
 
 exports.commonRequests =
     checkError: (err) ->
